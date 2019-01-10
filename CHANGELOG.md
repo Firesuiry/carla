@@ -1,3 +1,7 @@
+## Latest changes
+
+  * Upgraded Boost to 1.69.0
+
 ## CARLA 0.9.2
 
   * Updated ROS bridge for CARLA 0.9.X (moved to its own repository)
