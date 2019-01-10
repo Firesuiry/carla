@@ -15,7 +15,11 @@ import sys
 
 try:
     import pygame
+    from pygame.locals import K_DOWN
+    from pygame.locals import K_LEFT
     from pygame.locals import K_RIGHT
+    from pygame.locals import K_UP
+    from pygame.locals import K_ESCAPE
 except ImportError:
     raise RuntimeError('cannot import pygame, make sure pygame package is installed')
 
@@ -31,7 +35,7 @@ class Location(object):
     def __add__(self, other):
         self.x += other.x
         self.y += other.y
-        return self
+        return Location(self.x + other.x, self.y + other.y)
 
 class Vehicle(object):
     def __init__(self, location, size, color):
@@ -51,11 +55,20 @@ class KeyboardInput(object):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYUP:
-                if event.key == K_RIGHT:
-                    offset = Location(x=0,y=100)
-                    print (vehicle.location, offset)
-                    hello = vehicle.location + offset
-                    #vehicle.location =
+                # Quick actions
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            vehicle.location += Location(x=-0.1,y=0)
+        if keys[pygame.K_RIGHT]:
+            vehicle.location += Location(x=0.1,y=0)
+        if keys[pygame.K_UP]:
+            vehicle.location += Location(x=0,y=-0.1)
+        if keys[pygame.K_DOWN]:
+            vehicle.location += Location(x=0,y=0.1)
 
 
 def game_loop():
@@ -69,12 +82,14 @@ def game_loop():
     keyboard_input = KeyboardInput()
 
     # Create vehicle
-    vehicle = Vehicle(location=Location(x=0,y=0), size=(100, 100), color=(250,0,0))
+    vehicle = Vehicle(location=Location(0,0), size=(100, 100), color=(250,0,0))
 
     while True:
 
         # Handle events
         keyboard_input.parse_events(vehicle)
+
+        display.fill((0, 0, 0))
 
         vehicle.draw(display)
 
